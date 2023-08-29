@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const productMiddlewares = require('../middlewares/products')
 const products = require('../controllers/products');
+
+router.use(productMiddlewares.globalErrorHandler);
 
 router.get('/', function getAll(req, res) {
 
@@ -28,7 +31,7 @@ router.get('/:nombre', function findByName(req, res) {
 
 });
 
-router.post('/', function add(req, res) {
+router.post('/', productMiddlewares.verifiedData, function add(req, res) {
 
   let product = {
     id: req.body.id,
@@ -38,15 +41,19 @@ router.post('/', function add(req, res) {
     weight: req.body.weight
   }
 
-  products.add(product);
+  const found = products.add(product);
 
-  res.status(201).json({
-    mensaje : "ingreso el producto: " + req.body.name
-  });
+  if(found){
+    res.status(422).json({error: 'the product already exists'})
+  } else {
+    res.status(201).json({
+      mensaje : "ingreso el producto: " + req.body.name
+    });
+  }
 
 });
 
-router.put('/:indice', function update(req, res) {
+router.put('/:indice', productMiddlewares.verifiedData, productMiddlewares.hasId, productMiddlewares.equalsId, function update(req, res) {
 
   const indice = req.params.indice;
 
@@ -58,22 +65,30 @@ router.put('/:indice', function update(req, res) {
     weight: req.body.weight
   }
 
-  products.update(indice, product);
+  const updateResult = products.update(indice, product);
 
-  res.status(200).json({
-    mensaje : "actualizamos el producto: " + indice
-  });
+  if(!updateResult.success){
+    res.status(400).json({error: updateResult.error});
+  } else{
+    res.status(200).json({
+      mensaje : "actualizamos el producto: " + indice
+    });
+  }
 
 });
 
-router.delete('/:indice', function remove(req, res) {
-  //res.send('te devuelvo todos los users');
+router.delete('/:indice', productMiddlewares.hasId, function remove(req, res) {
   const indice = req.params.indice;
-  products.remove(indice);
+  const found = products.remove(indice);
 
-  res.status(200).json({
-    mensaje : "elimine el producto: " + indice
-  });
+  if(found){
+    res.status(404).json({error: 'the id does not exist'})
+  } else{
+    res.status(200).json({
+      mensaje : "elimine el producto: " + indice
+    });
+  }
+  
 });
 
 

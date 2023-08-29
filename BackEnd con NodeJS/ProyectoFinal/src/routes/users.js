@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const userMiddleware = require('../middlewares/users')
+
+router.use(userMiddleware.userLogger);
 
 const users = [];
 
@@ -11,19 +14,17 @@ router.get('/', function (req, res) {
   });
 });
 
-router.post('/', function (req, res) {
-  //res.send('te devuelvo todos los users');
-
+router.post('/', userMiddleware.add, function (req, res) {
   //aca van las validaciones
   users.push(req.body);
 
   res.status(201).json({
     mensaje : "ingreso el usuario: " + req.body.firstname,
-    infoAdicional: "+++"
+    user: req.body
   });
 });
 
-router.put('/:indice', function (req, res) {
+router.put('/:indice', userMiddleware.hasId, function (req, res) {
   //res.send('te devuelvo todos los users');
   const indice = req.params.indice;
   users[indice] = req.body;
@@ -34,7 +35,7 @@ router.put('/:indice', function (req, res) {
   });
 });
 
-router.delete('/:indice', function (req, res) {
+router.delete('/:indice', userMiddleware.hasId, function (req, res) {
   //res.send('te devuelvo todos los users');
   const indice = req.params.indice;
   users.splice(indice, 1);

@@ -8,5 +8,5 @@ const productsRouter = require('./routes/products');
 app.use('/products', productsRouter);
 
 app.listen(process.env.PORT, function(){
-    console.log('prendio');
+    console.log(`app encendida en el puerto ${process.env.PORT}`);
 });

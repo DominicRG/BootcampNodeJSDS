@@ -9,15 +9,15 @@ function findByName(name) {
 }
 
 function add(product) {
-    products.add(product);
+    return products.add(product);
 }
 
 function update(indice, product) {
-    products.update(indice, product);
+    return products.update(indice, product);
 }
 
 function remove(indice) {
-    products.remove(indice);
+    return products.remove(indice);
 }
 
 module.exports.getAll = getAll;

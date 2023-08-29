@@ -30,27 +30,65 @@ function findByName(name) {
 }
 
 function add(product) {
-    products.push({
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        measures: product.measures,
-        weight: product.weight
+    const found = products.some((element) => {
+        return element.name === product.name || element.id === product.id;
     })
 
-    fs.writeFileSync(archiveTxt, JSON.stringify(products));
+    if(found){
+        return true;
+    } else {
+        products.push({
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            measures: product.measures,
+            weight: product.weight
+        })
+    
+        fs.writeFileSync(archiveTxt, JSON.stringify(products));
+
+        return false;
+    }
+    
 }
 
 function update(indice, product) {
-    products[indice] = product;
+    const nameExist = products.some((element) => {
+        return element.name === product.name;
+    })
+
+    if(nameExist){
+        return {success: false, error: 'Name already exists'};
+    }
+
+    const indexToUpdate = products.findIndex(element => element.id === indice);
+
+    if(indexToUpdate !== -1){
+        products[indexToUpdate] = product;
     
-    fs.writeFileSync(archiveTxt, JSON.stringify(products));
+        fs.writeFileSync(archiveTxt, JSON.stringify(products));
+
+        return {success: true};
+    } else {
+        return {success: false, error: 'ID not found'};
+    }
+
+    
 }
 
 function remove(indice) {
-    products.splice(indice, 1);
+    const indexToRemove = products.findIndex(element => element.id === indice);
 
-    fs.writeFileSync(archiveTxt, JSON.stringify(products));
+    if(indexToRemove !== -1){
+        products.splice(indexToRemove, 1);
+
+        fs.writeFileSync(archiveTxt, JSON.stringify(products));
+
+        return false;
+    } else {
+        return true;
+    }
+
 }
 
 module.exports.getAll = getAll;
