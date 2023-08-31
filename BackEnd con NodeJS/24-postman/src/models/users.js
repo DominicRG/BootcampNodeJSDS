@@ -11,12 +11,14 @@ try {
 
 function add(firstname, lastname, email) {
   users.push({
-    firstaname: firstname,
+    firstname,
     lastname,
     email,
   });
 
   fs.writeFileSync('./users.txt', JSON.stringify(users));
+
+  return users.length -1
 }
 
 function all() {

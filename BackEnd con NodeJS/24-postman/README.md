@@ -2,6 +2,7 @@ renombrar .env-sample a .env
 
 npm install
 
+
 Para entorno de desarrollo
 npm run dev
 

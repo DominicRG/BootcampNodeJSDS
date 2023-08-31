@@ -1,5 +1,5 @@
 {
-  "name": "proyectofinal",
+  "name": "proyecto_final",
   "version": "1.0.0",
   "description": "Proyecto final del curso de Dani Segovia",
   "main": "src/index.js",
@@ -9,7 +9,7 @@
     "start": "node src/index.js",
     "lint": "eslint src/."
   },
-  "author": "Dominic Roman",
+  "author": "Daniel Segovia",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.47.0",
