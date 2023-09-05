@@ -1,29 +1,36 @@
-const fs = require('fs');
+const mongoose = require('../config/mongo')
+const ObjectId = mongoose.Types.ObjectId;
 
-let users = [];
+const usersSchema = new mongoose.Schema({
+  firstname: {type: String, required: true, lowercase: true},
+  lastname: {type: String, lowercase: true},
+  email: String,
+  age: Number
+});
 
-try {
-  const data = fs.readFileSync('./users.txt', 'utf8');
-  users = Array.isArray(JSON.parse(data)) ? JSON.parse(data) : [];
-} catch (error) {
-  console.log(error);
+const Users = mongoose.model('Users', usersSchema);
+
+async function add(data) {
+  try {
+    const newUser = new Users(data);
+    newUser.save();
+    return newUser;  
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-function add(firstname, lastname, email) {
-  users.push({
-    firstname,
-    lastname,
-    email,
-  });
-
-  fs.writeFileSync('./users.txt', JSON.stringify(users));
-
-  return users.length -1
+async function all() {
+  return await Users.find({});  
 }
 
-function all() {
-  return users;
+async function get(id){
+  try {
+    let user = await Users.findById(id).exec();
+    return user; 
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-module.exports.add = add;
-module.exports.all = all;
+module.exports = {add, all, get};

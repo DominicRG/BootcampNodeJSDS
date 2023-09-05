@@ -5,20 +5,21 @@ const userMiddleware = require("../middlewares/users")
 
 router.use(userMiddleware.userLogger)
 
-router.get('/:indice', userMiddleware.hasId, function (req, res) {
-    const users = usersController.userShow()
+router.get('/:indice', userMiddleware.hasId, async function (req, res) {
     const indice = req.params.indice
+    const user = await usersController.get(indice);
     res.status(200).json({
-        mensaje: "Te devuelvo todo los users",
-        user: users[indice]
+        mensaje: `Te devuelvo el user: ${user.id}`,
+        user: user
     })
 })
 
-router.get('/', function (req, res) {
+router.get('/', async function (req, res) {
     try {
+        let users = await usersController.userShow();
         res.status(200).json({
             mensaje: "Te devuelvo todo los users",
-            users: usersController.userShow()
+            users: users
         })
     } catch (error) {
         res.status(500).json({
@@ -28,17 +29,15 @@ router.get('/', function (req, res) {
     
 })
 
-router.post('/', userMiddleware.add, function (req, res) {
+router.post('/', userMiddleware.add, async function (req, res) {
 
     try {
         
-        const user_id = usersController.userAdd(req.body.firstname, req.body.lastname, req.body.email)
+        const data = await usersController.userAdd(req.body)
 
         res.status(201).json({
             mensaje: "El user " + req.body.firstname + " ha sido agregado",
-            user: req.body,
-            user_id: 7
-
+            user: data
         })    
     } catch (error) {
         res.status(404).json({

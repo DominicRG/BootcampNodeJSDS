@@ -1,19 +1,28 @@
 const usersModel = require('../models/users');
 
-function userAdd(firstname, lastname, email) {
+async function userAdd(data) {
   try {
-    console.log(firstname, lastname, email)
-    usersModel.add(firstname, lastname, email);  
-    return true
+    console.log("EN EL CONTROLLADOR")
+    console.log(data)
+    let dataC  = await usersModel.add(data);  
+    return dataC
   } catch (error) {
-    
+    console.error(error);
   }
-  
 }
 
-function userShow() {
-  return usersModel.all();
+async function userShow() {
+  let users = await usersModel.all();
+  return users;
 }
 
-module.exports.userAdd = userAdd;
-module.exports.userShow = userShow;
+async function get(id){
+  try {
+    let user = await usersModel.get(id);
+    return user;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports = {userAdd, userShow, get};
