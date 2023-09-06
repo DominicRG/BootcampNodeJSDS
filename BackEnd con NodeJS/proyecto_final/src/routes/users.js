@@ -5,9 +5,9 @@ const userMiddleware = require("../middlewares/users")
 
 router.use(userMiddleware.userLogger)
 
-router.get('/:indice', userMiddleware.hasId, async function (req, res) {
-    const indice = req.params.indice
-    const user = await usersController.get(indice);
+router.get('/:id', userMiddleware.hasId, async function (req, res) {
+    const id = req.params.id
+    const user = await usersController.get(id);
     res.status(200).json({
         mensaje: `Te devuelvo el user: ${user.id}`,
         user: user
@@ -49,28 +49,36 @@ router.post('/', userMiddleware.add, async function (req, res) {
     
 })
 
-router.put('/:indice', userMiddleware.hasId, function (req, res) {
-    /* generar métodos en el controlador y modelo para actualizar */
-    const users = usersController.userShow()
-    const indice = req.params.indice
-    users[indice] = req.body
+router.put('/:id', userMiddleware.hasId, async function (req, res) {
+    try {
+        const id = req.params.id
+        const users = await usersController.userUpdate(id, req.body)
 
-    res.status(200).json({
-        mensaje: `${indice} ha sido actualizado`,
-        users: users
-    })
+        res.status(200).json({
+            mensaje: `el usuario ha sido actualizado`
+        })    
+    } catch (error) {
+        res.status(404).json({
+            mensaje: error
+        }) 
+    }
 })
 
-router.delete('/:indice', userMiddleware.hasId, function (req, res) {
-    /* generar métodos en el controlador y modelo para eliminar */
+router.delete('/:id', userMiddleware.hasId, async function (req, res) {
+    try {
+        const id = req.params.id
+        const users = await usersController.userDelete(id)
+        
 
-    const indice = req.params.indice
-    user = users.splice(indice, 1)
+        res.status(200).json({
+            mensaje: `el usuario ha sido eliminado`
+        })
+    } catch (error) {
+        res.status(404).json({
+            mensaje: error
+        })
 
-    res.status(204).json({
-        mensaje: "usuario eliminado",
-        users: user
-    })
+    }
 })
 
 

@@ -25,4 +25,12 @@ async function get(id){
   }
 }
 
-module.exports = {userAdd, userShow, get};
+async function userUpdate(id, data) {
+  return await usersModel.update(id, data)
+}
+
+async function userDelete(id) {
+  return await usersModel.del(id)
+}
+
+module.exports = {userAdd, userShow, get, userUpdate, userDelete};

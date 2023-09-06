@@ -33,4 +33,21 @@ async function get(id){
   }
 }
 
-module.exports = {add, all, get};
+async function update(id, data) {
+  try {
+    return await Users.findByIdAndUpdate(new ObjectId(id), data)
+  } catch (error) {
+    throw error
+  }
+}
+
+async function del(id) {
+  try {
+    return await Users.findByIdAndRemove(new ObjectId(id))
+  } catch (error) {
+    throw error
+  }
+}
+
+
+module.exports = {add, all, get, update, del};
